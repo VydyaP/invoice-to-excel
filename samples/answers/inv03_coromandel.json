@@ -1,0 +1,49 @@
+{
+  "file": "inv03_coromandel.pdf",
+  "note": "Other state (Tamil Nadu), so IGST; narrow receipt layout",
+  "expected_flags": [],
+  "invoice": {
+    "supplier_name": "Coromandel Spices & Masala Co.",
+    "supplier_gstin": "33AAGFC2276D1ZV",
+    "invoice_number": "CSM/1903/26",
+    "invoice_date": "2026-10-08",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Sambar Powder 500g",
+        "hsn_code": "0910",
+        "quantity": 30.0,
+        "unit": "PKT",
+        "rate": 96.0,
+        "taxable_value": 2880.0,
+        "gst_rate": 5.0
+      },
+      {
+        "description": "Chilli Powder 1kg",
+        "hsn_code": "0904",
+        "quantity": 12.0,
+        "unit": "PKT",
+        "rate": 260.0,
+        "taxable_value": 3120.0,
+        "gst_rate": 5.0
+      },
+      {
+        "description": "Turmeric Powder 500g",
+        "hsn_code": "0910",
+        "quantity": 20.0,
+        "unit": "PKT",
+        "rate": 88.0,
+        "taxable_value": 1760.0,
+        "gst_rate": 5.0
+      }
+    ],
+    "taxable_total": 7760.0,
+    "cgst_amount": 0.0,
+    "sgst_amount": 0.0,
+    "igst_amount": 388.0,
+    "round_off": 0.0,
+    "grand_total": 8148.0
+  }
+}

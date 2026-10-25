@@ -1,0 +1,49 @@
+{
+  "file": "inv06_kaveri_photo.jpg",
+  "note": "Phone photo of a classic layout",
+  "expected_flags": [],
+  "invoice": {
+    "supplier_name": "Kaveri Home Care Products",
+    "supplier_gstin": "29AAMFK7390B1Z1",
+    "invoice_number": "KHC-2026-1240",
+    "invoice_date": "2026-10-14",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Floor Cleaner 1L",
+        "hsn_code": "3402",
+        "quantity": 24.0,
+        "unit": "BTL",
+        "rate": 118.0,
+        "taxable_value": 2832.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Toilet Soap 100g x4",
+        "hsn_code": "3401",
+        "quantity": 30.0,
+        "unit": "PKT",
+        "rate": 96.0,
+        "taxable_value": 2880.0,
+        "gst_rate": 5.0
+      },
+      {
+        "description": "Shampoo 340ml",
+        "hsn_code": "3305",
+        "quantity": 18.0,
+        "unit": "BTL",
+        "rate": 155.0,
+        "taxable_value": 2790.0,
+        "gst_rate": 5.0
+      }
+    ],
+    "taxable_total": 8502.0,
+    "cgst_amount": 396.63,
+    "sgst_amount": 396.63,
+    "igst_amount": 0.0,
+    "round_off": -0.26,
+    "grand_total": 9295.0
+  }
+}

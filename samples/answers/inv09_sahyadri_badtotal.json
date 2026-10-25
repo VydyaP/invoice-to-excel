@@ -1,0 +1,42 @@
+{
+  "file": "inv09_sahyadri_badtotal.pdf",
+  "note": "Printed grand total is ₹100 more than the lines add up to",
+  "expected_flags": [
+    "TOTAL_MISMATCH"
+  ],
+  "invoice": {
+    "supplier_name": "Sahyadri Agro Foods Pvt Ltd",
+    "supplier_gstin": "29AAICS4821K1ZY",
+    "invoice_number": "SAF/26-27/0455",
+    "invoice_date": "2026-10-17",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Sugar 1kg",
+        "hsn_code": "1701",
+        "quantity": 50.0,
+        "unit": "PKT",
+        "rate": 44.0,
+        "taxable_value": 2200.0,
+        "gst_rate": 5.0
+      },
+      {
+        "description": "Sunflower Oil 1L",
+        "hsn_code": "1512",
+        "quantity": 36.0,
+        "unit": "PKT",
+        "rate": 139.0,
+        "taxable_value": 5004.0,
+        "gst_rate": 5.0
+      }
+    ],
+    "taxable_total": 7204.0,
+    "cgst_amount": 180.1,
+    "sgst_amount": 180.1,
+    "igst_amount": 0.0,
+    "round_off": -0.2,
+    "grand_total": 7664.0
+  }
+}

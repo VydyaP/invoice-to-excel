@@ -1,0 +1,94 @@
+{
+  "file": "inv04_deccan.pdf",
+  "note": "Long invoice, 8 lines",
+  "expected_flags": [],
+  "invoice": {
+    "supplier_name": "Deccan Packaging Industries",
+    "supplier_gstin": "29AAPFD9143H1ZY",
+    "invoice_number": "DPI/OCT/2209",
+    "invoice_date": "2026-10-09",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Corrugated Box 12x10x8",
+        "hsn_code": "4819",
+        "quantity": 500.0,
+        "unit": "NOS",
+        "rate": 14.5,
+        "taxable_value": 7250.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Carry Bag 40 micron (kg)",
+        "hsn_code": "3923",
+        "quantity": 25.0,
+        "unit": "KG",
+        "rate": 168.0,
+        "taxable_value": 4200.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Packing Tape 2 inch",
+        "hsn_code": "3919",
+        "quantity": 48.0,
+        "unit": "NOS",
+        "rate": 42.0,
+        "taxable_value": 2016.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Label Roll 50x25mm",
+        "hsn_code": "4821",
+        "quantity": 10.0,
+        "unit": "ROL",
+        "rate": 210.0,
+        "taxable_value": 2100.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Stretch Film 18 inch",
+        "hsn_code": "3920",
+        "quantity": 6.0,
+        "unit": "ROL",
+        "rate": 640.0,
+        "taxable_value": 3840.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Paper Bag Medium",
+        "hsn_code": "4819",
+        "quantity": 1000.0,
+        "unit": "NOS",
+        "rate": 3.2,
+        "taxable_value": 3200.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Glue Bottle 500ml",
+        "hsn_code": "3506",
+        "quantity": 12.0,
+        "unit": "NOS",
+        "rate": 85.0,
+        "taxable_value": 1020.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Price Gun Labels",
+        "hsn_code": "4821",
+        "quantity": 20.0,
+        "unit": "ROL",
+        "rate": 36.0,
+        "taxable_value": 720.0,
+        "gst_rate": 18.0
+      }
+    ],
+    "taxable_total": 24346.0,
+    "cgst_amount": 2191.14,
+    "sgst_amount": 2191.14,
+    "igst_amount": 0.0,
+    "round_off": -0.28,
+    "grand_total": 28728.0
+  }
+}

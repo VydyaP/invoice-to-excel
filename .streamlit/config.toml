@@ -1,0 +1,8 @@
+[server]
+maxUploadSize = 20
+
+[theme]
+primaryColor = "#1F3B5A"
+
+[client]
+toolbarMode = "minimal"

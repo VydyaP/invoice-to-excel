@@ -1,0 +1,23 @@
+[project]
+name = "invoice-to-excel"
+version = "1.0.0"
+description = "Read Indian GST purchase invoices with AI, check the numbers, review what's flagged, export to Excel."
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["invoice_to_excel", "conftest", "evaluate"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["E501"]
+"tests/*" = ["E501"]

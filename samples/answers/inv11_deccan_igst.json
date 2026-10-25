@@ -1,0 +1,42 @@
+{
+  "file": "inv11_deccan_igst.pdf",
+  "note": "Same-state supply but IGST charged instead of CGST + SGST",
+  "expected_flags": [
+    "TAX_TYPE"
+  ],
+  "invoice": {
+    "supplier_name": "Deccan Packaging Industries",
+    "supplier_gstin": "29AAPFD9143H1ZY",
+    "invoice_number": "DPI/OCT/2251",
+    "invoice_date": "2026-10-20",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Corrugated Box 12x10x8",
+        "hsn_code": "4819",
+        "quantity": 300.0,
+        "unit": "NOS",
+        "rate": 14.5,
+        "taxable_value": 4350.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Packing Tape 2 inch",
+        "hsn_code": "3919",
+        "quantity": 24.0,
+        "unit": "NOS",
+        "rate": 42.0,
+        "taxable_value": 1008.0,
+        "gst_rate": 18.0
+      }
+    ],
+    "taxable_total": 5358.0,
+    "cgst_amount": 0.0,
+    "sgst_amount": 0.0,
+    "igst_amount": 964.44,
+    "round_off": -0.44,
+    "grand_total": 6322.0
+  }
+}

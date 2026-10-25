@@ -1,0 +1,49 @@
+{
+  "file": "inv02_kaveri.pdf",
+  "note": "Mixed 5% and 18% lines",
+  "expected_flags": [],
+  "invoice": {
+    "supplier_name": "Kaveri Home Care Products",
+    "supplier_gstin": "29AAMFK7390B1Z1",
+    "invoice_number": "KHC-2026-1187",
+    "invoice_date": "2026-10-06",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Detergent Powder 1kg",
+        "hsn_code": "3402",
+        "quantity": 24.0,
+        "unit": "PKT",
+        "rate": 92.0,
+        "taxable_value": 2208.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Dishwash Bar 3pc",
+        "hsn_code": "3401",
+        "quantity": 36.0,
+        "unit": "PKT",
+        "rate": 38.0,
+        "taxable_value": 1368.0,
+        "gst_rate": 18.0
+      },
+      {
+        "description": "Herbal Toothpaste 150g",
+        "hsn_code": "3306",
+        "quantity": 30.0,
+        "unit": "NOS",
+        "rate": 64.0,
+        "taxable_value": 1920.0,
+        "gst_rate": 5.0
+      }
+    ],
+    "taxable_total": 5496.0,
+    "cgst_amount": 369.84,
+    "sgst_amount": 369.84,
+    "igst_amount": 0.0,
+    "round_off": 0.32,
+    "grand_total": 6236.0
+  }
+}

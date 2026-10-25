@@ -1,0 +1,33 @@
+{
+  "file": "inv10_malnad_badgstin.pdf",
+  "note": "Supplier GSTIN has a wrong check digit",
+  "expected_flags": [
+    "GSTIN_CHECKSUM"
+  ],
+  "invoice": {
+    "supplier_name": "Malnad Coffee Curing Works",
+    "supplier_gstin": "29AAEFM6055R1Z7",
+    "invoice_number": "MCW/26/0801",
+    "invoice_date": "2026-10-18",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Filter Coffee Powder 500g",
+        "hsn_code": "0901",
+        "quantity": 30.0,
+        "unit": "PKT",
+        "rate": 205.0,
+        "taxable_value": 6150.0,
+        "gst_rate": 5.0
+      }
+    ],
+    "taxable_total": 6150.0,
+    "cgst_amount": 153.75,
+    "sgst_amount": 153.75,
+    "igst_amount": 0.0,
+    "round_off": 0.5,
+    "grand_total": 6458.0
+  }
+}

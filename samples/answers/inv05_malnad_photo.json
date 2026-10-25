@@ -1,0 +1,40 @@
+{
+  "file": "inv05_malnad_photo.jpg",
+  "note": "Phone photo: tilted, shadowed, compressed",
+  "expected_flags": [],
+  "invoice": {
+    "supplier_name": "Malnad Coffee Curing Works",
+    "supplier_gstin": "29AAEFM6055R1ZI",
+    "invoice_number": "MCW/26/0788",
+    "invoice_date": "2026-10-11",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Filter Coffee Powder 500g",
+        "hsn_code": "0901",
+        "quantity": 40.0,
+        "unit": "PKT",
+        "rate": 205.0,
+        "taxable_value": 8200.0,
+        "gst_rate": 5.0
+      },
+      {
+        "description": "Coffee-Chicory Blend 1kg",
+        "hsn_code": "2101",
+        "quantity": 10.0,
+        "unit": "PKT",
+        "rate": 360.0,
+        "taxable_value": 3600.0,
+        "gst_rate": 5.0
+      }
+    ],
+    "taxable_total": 11800.0,
+    "cgst_amount": 295.0,
+    "sgst_amount": 295.0,
+    "igst_amount": 0.0,
+    "round_off": 0.0,
+    "grand_total": 12390.0
+  }
+}

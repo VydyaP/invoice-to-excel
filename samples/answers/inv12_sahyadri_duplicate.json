@@ -1,0 +1,51 @@
+{
+  "file": "inv12_sahyadri_duplicate.jpg",
+  "note": "The same invoice as inv01, photographed and uploaded again",
+  "expected_flags": [
+    "DUPLICATE"
+  ],
+  "invoice": {
+    "supplier_name": "Sahyadri Agro Foods Pvt Ltd",
+    "supplier_gstin": "29AAICS4821K1ZY",
+    "invoice_number": "SAF/26-27/0412",
+    "invoice_date": "2026-10-03",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Toor Dal 1kg",
+        "hsn_code": "0713",
+        "quantity": 40.0,
+        "unit": "PKT",
+        "rate": 142.0,
+        "taxable_value": 5680.0,
+        "gst_rate": 5.0
+      },
+      {
+        "description": "Sona Masoori Rice 25kg",
+        "hsn_code": "1006",
+        "quantity": 6.0,
+        "unit": "BAG",
+        "rate": 1180.0,
+        "taxable_value": 7080.0,
+        "gst_rate": 5.0
+      },
+      {
+        "description": "Wheat Atta 5kg",
+        "hsn_code": "1101",
+        "quantity": 20.0,
+        "unit": "PKT",
+        "rate": 228.0,
+        "taxable_value": 4560.0,
+        "gst_rate": 5.0
+      }
+    ],
+    "taxable_total": 17320.0,
+    "cgst_amount": 433.0,
+    "sgst_amount": 433.0,
+    "igst_amount": 0.0,
+    "round_off": 0.0,
+    "grand_total": 18186.0
+  }
+}

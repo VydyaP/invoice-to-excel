@@ -1,0 +1,42 @@
+{
+  "file": "inv08_konkan_2026.pdf",
+  "note": "Still charging the old 12% slab after it was removed",
+  "expected_flags": [
+    "RATE_NOT_VALID_ON_DATE"
+  ],
+  "invoice": {
+    "supplier_name": "Konkan Snacks & Namkeen LLP",
+    "supplier_gstin": "27AAOFK3318E1ZD",
+    "invoice_number": "KSN/26-27/0102",
+    "invoice_date": "2026-10-15",
+    "buyer_name": "Namma Angadi Provisions (demo)",
+    "buyer_gstin": "29AAPFN5678Q1ZX",
+    "place_of_supply_state_code": "29",
+    "line_items": [
+      {
+        "description": "Namkeen Mixture 1kg",
+        "hsn_code": "2106",
+        "quantity": 20.0,
+        "unit": "PKT",
+        "rate": 215.0,
+        "taxable_value": 4300.0,
+        "gst_rate": 12.0
+      },
+      {
+        "description": "Aloo Bhujia 400g",
+        "hsn_code": "2106",
+        "quantity": 40.0,
+        "unit": "PKT",
+        "rate": 84.0,
+        "taxable_value": 3360.0,
+        "gst_rate": 12.0
+      }
+    ],
+    "taxable_total": 7660.0,
+    "cgst_amount": 0.0,
+    "sgst_amount": 0.0,
+    "igst_amount": 919.2,
+    "round_off": -0.2,
+    "grand_total": 8579.0
+  }
+}
