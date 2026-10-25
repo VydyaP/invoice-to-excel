@@ -7,3 +7,5 @@ __pycache__/
 *.xlsx
 !samples/**
 .DS_Store
+
+*.zip

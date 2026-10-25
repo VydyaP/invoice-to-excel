@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+from collections.abc import Callable
 from dataclasses import dataclass, field
 
 from .checks import Flag, check_batch
@@ -33,9 +34,13 @@ class Result:
         return "Looks right"
 
 
-def process(files: list[tuple[str, bytes]], provider: Provider, today: dt.date | None = None) -> list[Result]:
+def process(files: list[tuple[str, bytes]], provider: Provider, today: dt.date | None = None,
+            progress: Callable[[int, int, str], None] | None = None) -> list[Result]:
+    """Read and check every file. `progress(done, total, file_name)` is called before each file."""
     results: list[Result] = []
-    for name, data in files:
+    for i, (name, data) in enumerate(files):
+        if progress:
+            progress(i, len(files), name)
         try:
             ex = provider.extract(name, data)
             results.append(Result(name, invoice_from_dict(ex.data), extraction=ex))

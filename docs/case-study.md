@@ -43,7 +43,7 @@ A 12% bill from August 2025 is included on purpose and must **not** be flagged. 
 
 Accuracy, time and cost per invoice: see [accuracy.md](accuracy.md) (pending the first evaluation run).
 
-Engineering: 90 automated tests, including the request sent to the API, the fallback, plain-English messages for a bad key, rate limits and outages, the review page, and the Excel output.
+Engineering: 102 automated tests, including the request sent to the API, the fallback, plain-English messages for a bad key, rate limits and outages, the review page, and the Excel output.
 
 ## What I'd do next for a real client
 

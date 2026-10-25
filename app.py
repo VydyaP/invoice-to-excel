@@ -90,8 +90,10 @@ def demo_provider():
 
 
 def run(files: list[tuple[str, bytes]], provider) -> None:
-    with st.spinner(f"Reading {len(files)} invoice(s)…"):
-        results = process(files, provider)
+    bar = st.progress(0.0, text=f"Reading {len(files)} invoice(s)…")
+    results = process(files, provider,
+                      progress=lambda done, total, name: bar.progress(done / total, text=f"Reading {name}…"))
+    bar.empty()
     for k in [k for k in st.session_state if str(k)[:1].isdigit() or str(k).startswith("edit_")]:
         del st.session_state[k]  # drop edit boxes from a previous batch
     st.session_state.results = results

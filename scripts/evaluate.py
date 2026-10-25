@@ -1,8 +1,14 @@
 """Measure how accurately the AI reads the sample invoices.
 
+    # With an Anthropic API key (what the app uses):
     export ANTHROPIC_API_KEY=...            # your own key; never commit it
-    python scripts/evaluate.py --record     # read all samples, score, save answers for the demo
-    python scripts/evaluate.py --provider recorded   # re-score saved answers, no API calls
+    python scripts/evaluate.py --record
+
+    # With a Claude subscription (e.g. Pro) through the Claude Code CLI, no API key:
+    python scripts/evaluate.py --provider claude-code --record
+
+    # Re-score saved answers, no AI calls:
+    python scripts/evaluate.py --provider recorded
 
 Scores every field against samples/answers/*.json (what is printed on each invoice), checks
 that the rules catch the 5 planted problems without false alarms, and writes
@@ -22,7 +28,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from invoice_to_excel.extract import DEFAULT_MODEL, ClaudeProvider, RecordedProvider  # noqa: E402
+from invoice_to_excel.extract import (  # noqa: E402
+    DEFAULT_MODEL,
+    ClaudeCodeProvider,
+    ClaudeProvider,
+    ExtractionError,
+    RecordedProvider,
+)
 from invoice_to_excel.pipeline import estimated_cost_usd, process  # noqa: E402
 from invoice_to_excel.schema import HEADER_FIELDS, LINE_FIELDS, invoice_from_dict  # noqa: E402
 
@@ -65,21 +77,35 @@ def score(got_inv, want: dict) -> dict:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--provider", choices=["claude", "recorded"], default="claude")
-    ap.add_argument("--model", default=DEFAULT_MODEL)
+    ap.add_argument("--provider", choices=["claude", "claude-code", "recorded"], default="claude",
+                    help="claude = Anthropic API key; claude-code = Claude Code CLI on a Claude subscription")
+    ap.add_argument("--model", help=f"model id (API default: {DEFAULT_MODEL}; Claude Code: its default model)")
     ap.add_argument("--record", action="store_true", help="save the AI's answers to demo/recorded/")
     ap.add_argument("--only", help="comma-separated sample names to run (default: all)")
     args = ap.parse_args(argv)
 
-    provider = RecordedProvider(RECORDED) if args.provider == "recorded" else ClaudeProvider(model=args.model)
+    try:
+        if args.provider == "recorded":
+            provider = RecordedProvider(RECORDED)
+        elif args.provider == "claude-code":
+            provider = ClaudeCodeProvider(model=args.model)
+        else:
+            provider = ClaudeProvider(model=args.model or DEFAULT_MODEL)
+    except ExtractionError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
     answers = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(ANSWERS.glob("*.json"))}
     if args.only:
         keep = set(args.only.split(","))
         answers = {k: v for k, v in answers.items() if k in keep}
     files = [(a["file"], (SAMPLES / a["file"]).read_bytes()) for a in answers.values()]
 
+    def progress(done: int, total: int, name: str) -> None:
+        if args.provider != "recorded":
+            print(f"[{done + 1}/{total}] reading {name} ...", flush=True)
+
     started = time.time()
-    results = process(files, provider, today=EVAL_TODAY)
+    results = process(files, provider, today=EVAL_TODAY, progress=progress)
     seconds = time.time() - started
 
     rows, totals = [], {"fields": 0, "right": 0}
@@ -111,7 +137,7 @@ def main(argv=None) -> int:
             misses.append(f"- **{ans['file']}**: {s['extra_lines']} extra line item(s) invented")
         rows.append((ans["file"], right, len(flat), ", ".join(sorted(got_codes)) or "none",
                      ", ".join(sorted(extra)) or "none"))
-        if args.record and args.provider == "claude" and res.extraction:
+        if args.record and args.provider != "recorded" and res.extraction:
             RECORDED.mkdir(parents=True, exist_ok=True)
             ex = res.extraction
             (RECORDED / f"{stem}.json").write_text(json.dumps({
@@ -122,12 +148,17 @@ def main(argv=None) -> int:
     pct = 100 * totals["right"] / totals["fields"] if totals["fields"] else 0.0
     expected_total = sum(len(a["expected_flags"]) for a in answers.values())
     cost = estimated_cost_usd(results)
-    model = next((r.extraction.model for r in results if r.extraction), args.model)
+    model = next((r.extraction.model for r in results if r.extraction), args.model or DEFAULT_MODEL)
+    via = {"claude": "the Anthropic API (the same call the app makes)",
+           "claude-code": "the Claude Code CLI on a Claude subscription (not the app's API call; see below)",
+           "recorded": "previously recorded answers"}[args.provider]
     lines = [
         "# Measured accuracy",
         "",
         f"Run on {dt.date.today().strftime('%d %b %Y')} with **{model}** over {len(answers)} fictional sample invoices "
         f"(PDFs and phone photos, see `samples/`). Answer keys are in `samples/answers/`.",
+        "",
+        f"Read through {via}.",
         "",
         "| Measure | Result |",
         "|---|---|",
@@ -136,19 +167,27 @@ def main(argv=None) -> int:
         f"| False alarms (error-level flags with no planted problem) | **{false_alarms}** |",
         f"| Time for all invoices | {seconds:.0f} s |",
     ]
-    if cost is not None:
+    if cost is not None and args.provider == "claude":
         lines.append(f"| Estimated AI cost for the run | about ${cost:.4f} (≈ ₹{cost * 88:.2f} at ₹88/$) |")
+    summary = [line for line in lines if line.startswith("| ") and not line.startswith("| Measure")]
     lines += ["", "## Per invoice", "", "| Invoice | Fields right | Problems flagged | Unexpected errors |", "|---|---|---|---|"]
     lines += [f"| {f} | {r}/{n} | {c} | {x} |" for f, r, n, c, x in rows]
     lines += ["", "## Fields the AI got wrong", ""] + (misses or ["None."])
+    if args.provider == "claude-code":
+        lines += ["", "## About this measurement", "",
+                  "These answers came from Claude Code (`claude -p` with `--json-schema`), which reads each file "
+                  "with its own Read tool and was signed in with a Claude subscription, so there is no per-invoice "
+                  "API cost to report. The web app's \"Read your own invoices\" tab calls the Anthropic API "
+                  f"directly with `{DEFAULT_MODEL}`. Results through that path may differ until it is measured "
+                  "with `python scripts/evaluate.py --record` and an API key."]
     lines += ["", "Re-run with `python scripts/evaluate.py --record`. The cost estimate uses the per-token "
               "prices in `src/invoice_to_excel/pipeline.py`; check Anthropic's pricing page for current rates."]
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    print("\n".join(lines[6:11]))
+    print("\n".join(summary))
     print(f"\nFull report: {_show(REPORT)}")
-    if args.record and args.provider == "claude":
+    if args.record and args.provider != "recorded":
         print(f"Saved AI answers for the demo in {_show(RECORDED)}/")
     return 0
 

@@ -47,7 +47,7 @@ This tool lets AI read each bill, then checks the result with plain arithmetic a
 
 ## Accuracy
 
-**Not measured yet.** The evaluation script (`scripts/evaluate.py`) scores every field the AI reads against hand-typed answer keys for all 12 samples and checks that the 5 planted problems are caught without false alarms. It needs an API key, so its results will be published in [docs/accuracy.md](docs/accuracy.md) once it has been run. Until then this README makes no accuracy claim.
+**Not measured yet.** The evaluation script (`scripts/evaluate.py`) scores every field the AI reads against hand-typed answer keys for all 12 samples and checks that the 5 planted problems are caught without false alarms. It can run with an Anthropic API key (the same call the app makes) or through Claude Code on a Claude subscription; [docs/accuracy.md](docs/accuracy.md) says which was used and which model read the invoices. Until it has been run, this README makes no accuracy claim.
 
 What *is* tested: the checks find exactly the 5 planted problems in the answer keys and nothing else (see `tests/test_checks.py`).
 
@@ -71,7 +71,8 @@ Each invoice is one API call. A one-page PDF is roughly 2,000–3,000 input toke
 ```
 app.py                          Streamlit review page
 src/invoice_to_excel/
-  extract.py                    Claude call (PDF/image blocks, JSON schema, fallbacks, plain error messages)
+  extract.py                    Claude API call (PDF/image blocks, JSON schema, fallbacks, plain error
+                                messages); Claude Code CLI reader for evaluation on a subscription
   schema.py                     Fields, JSON schema, clean-up of the AI's answer
   gst.py                        GSTIN checksum, state codes, GST rates by date
   checks.py                     All checks (no AI)
@@ -80,11 +81,11 @@ src/invoice_to_excel/
   preview.py                    Page images for the review screen
 scripts/
   make_samples.py               Builds the 12 fictional invoices and their answer keys
-  evaluate.py                   Measures accuracy; --record saves answers for the free demo
+  evaluate.py                   Measures accuracy (API or Claude Code); --record saves answers for the demo
   make_doc_images.py            README images
 samples/invoices, samples/answers
 demo/recorded/                  AI answers replayed by the demo (added by evaluate.py --record)
-tests/                          90 tests; the AI is replaced by a fake, so no key is needed
+tests/                          102 tests; the AI is replaced by a fake, so no key is needed
 ```
 
 ## Tests

@@ -3,6 +3,8 @@
 Providers:
   * ClaudeProvider  - the real thing: sends the PDF or photo to the Claude API and forces
                       the answer into the invoice JSON schema.
+  * ClaudeCodeProvider - reads each invoice through the Claude Code CLI (`claude -p`), using
+                      a Claude subscription login instead of an API key. Used for evaluation.
   * RecordedProvider - replays answers saved by scripts/evaluate.py --record, so the public
                       demo costs nothing and never needs an API key.
 Tests use a fake provider with the same interface.
@@ -15,6 +17,9 @@ import io
 import json
 import os
 import re
+import shutil
+import subprocess
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Protocol
@@ -193,6 +198,81 @@ def _friendly(exc: Exception) -> str:
     if type(exc).__name__ in ("APIConnectionError", "APITimeoutError"):
         return "Could not reach the AI service. Check the internet connection."
     return f"The AI request failed: {exc}"
+
+
+class ClaudeCodeProvider:
+    """Claude Code CLI in print mode, signed in with a Claude subscription (for example Pro).
+
+    Each invoice is copied into an empty temporary folder; Claude Code may only use its Read
+    tool there, and must answer in the invoice JSON schema (--json-schema). ANTHROPIC_API_KEY is
+    removed from its environment so the subscription login is used, not API credit.
+    """
+
+    name = "claude-code"
+
+    def __init__(self, model: str | None = None, cli: str = "claude", timeout: int = 300, runner=None):
+        self.model, self.cli, self.timeout = model, cli, timeout
+        self.runner = runner or subprocess.run
+        if runner is None and shutil.which(cli) is None:
+            raise ExtractionError("Claude Code ('claude' command) was not found. Install it and sign in "
+                                  "with your Claude account first (see docs/setup.md).")
+
+    def command(self, file_name: str) -> list[str]:
+        prompt = (f"Read the invoice file ./{file_name} with the Read tool. Do not open any other file.\n\n"
+                  + INSTRUCTIONS + "\nAnswer only with the structured output.")
+        cmd = [self.cli, "-p", prompt, "--output-format", "json", "--json-schema", json.dumps(INVOICE_JSON_SCHEMA),
+               "--allowedTools", "Read", "--permission-mode", "dontAsk"]
+        if self.model:
+            cmd += ["--model", self.model]
+        return cmd
+
+    def extract(self, file_name: str, data: bytes) -> Extraction:
+        if len(data) > MAX_BYTES:
+            raise ExtractionError(f"{file_name}: file is larger than 20 MB.")
+        mt = media_type(file_name)
+        if mt == "application/pdf":
+            if not data.startswith(b"%PDF"):
+                raise ExtractionError(f"{file_name}: this is not a valid PDF.")
+            local_name = "invoice.pdf"
+        else:
+            data, _ = prepare_image(data)  # same rotation and resizing as the API path
+            local_name = "invoice.jpg"
+        env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
+        with tempfile.TemporaryDirectory(prefix="invoice-") as tmp:
+            (Path(tmp) / local_name).write_bytes(data)
+            try:
+                proc = self.runner(self.command(local_name), cwd=tmp, env=env, stdin=subprocess.DEVNULL,
+                                   capture_output=True, text=True, timeout=self.timeout)
+            except subprocess.TimeoutExpired as exc:
+                raise ExtractionError(f"Claude Code took longer than {self.timeout} s on this file.") from exc
+            except OSError as exc:
+                raise ExtractionError(f"Could not start Claude Code: {exc}") from exc
+        return self._parse(proc)
+
+    def _parse(self, proc) -> Extraction:
+        try:
+            out = json.loads(proc.stdout)
+        except (json.JSONDecodeError, TypeError):
+            detail = (proc.stderr or proc.stdout or "").strip().splitlines()[-1:] or ["no output"]
+            raise ExtractionError(f"Claude Code did not return a result ({detail[0][:200]}).") from None
+        if out.get("is_error") or out.get("subtype", "success") != "success":
+            reason = str(out.get("result") or out.get("subtype") or "unknown error")[:200]
+            raise ExtractionError(f"Claude Code could not read this file: {reason}")
+        data = out.get("structured_output")
+        if not isinstance(data, dict):
+            data = parse_json_text(str(out.get("result") or ""))
+        model_usage = out.get("modelUsage") or {}
+        model = self.model or "claude-code"
+        if model_usage:  # the model that did the reading produced the most output
+            model = max(model_usage, key=lambda m: (model_usage[m] or {}).get("outputTokens", 0))
+        usage = out.get("usage") or {}
+        return Extraction(
+            data=data, model=model,
+            input_tokens=sum(int(usage.get(k) or 0) for k in
+                             ("input_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")),
+            output_tokens=int(usage.get("output_tokens") or 0),
+            notes=[f"Read through Claude Code ({model}) on a Claude subscription"],
+        )
 
 
 class RecordedProvider:
